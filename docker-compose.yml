@@ -1,0 +1,49 @@
+services:
+  sonarqube:
+    image: sonarqube:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - SONAR_JDBC_URL
+      - SONAR_JDBC_USERNAME
+      - SONAR_JDBC_PASSWORD
+    volumes:
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+    depends_on:
+      - db
+
+  db:
+    image: postgres:12
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+
+  sonar-scanner:
+    image: sonarsource/sonar-scanner-cli
+    environment:
+      - SONAR_HOST_URL
+      - SONAR_LOGIN=${SONAR_TOKEN}
+    working_dir: /usr/src
+    volumes:
+      - .:/usr/src
+    command: >
+      -Dsonar.projectKey=github-runs-archiver
+      -Dsonar.sources=github_run_archiver
+      -Dsonar.python.version=3.9.7
+      -Dsonar.sourceEncoding=UTF-8
+      -Dsonar.login=${SONAR_TOKEN}
+    depends_on:
+      - sonarqube
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  postgresql:
+  postgresql_data:
