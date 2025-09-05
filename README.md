@@ -55,10 +55,15 @@ Wait about 1-2 minutes for SonarQube to fully initialize.
 3. Enter a name for your token (e.g., "local-scanner") and click **Generate**
 4. Copy the generated token and update the `SONAR_TOKEN` value in your .env file
 
-### 5. Run the Code Analysis
+### 5. Configure project key ans source folder
+
+1. In the SonarQube UI, create a new project (may be same as the name of the porkject you want to analyze)
+2. Provide the peoject key and source folder name of the code in the properties of sonar scanner.
+
+### 6. Run the Code Analysis
 
 ```bash
-docker-compose up sonar-scanner
+docker-compose run --rm sonar-scanner
 ```
 
 This will:
@@ -66,7 +71,7 @@ This will:
 2. Upload the results to your SonarQube instance
 3. Display the analysis progress in the terminal
 
-### 6. View Analysis Results
+### 7. View Analysis Results
 
 1. Go back to the SonarQube UI at [http://localhost:9000](http://localhost:9000)
 2. Navigate to **Projects**
